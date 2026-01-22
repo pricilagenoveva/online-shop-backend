@@ -21,14 +21,15 @@ app.get('/', (req, res) => {
 // routes
 app.get('/api/products', async (req, res) => {
   try {
-    const products = await Product.find(); // misal pakai database
+    console.log("Request ke /api/products diterima");
+    const products = await Product.find(); // sesuaikan dengan model/database
     res.json(products);
   } catch (err) {
-    console.error(err); // ini penting untuk debugging
-    res.status(500).json({ message: 'Internal Server Error' });
+    console.error("Error di /api/products:", err);
+    res.status(500).json({ message: "Internal Server Error", error: err.message });
   }
 });
-app.use('/api/auth', authRoutes);
+
 
 mongoose.connect('mongodb://127.0.0.1:27017/online-shop')
   .then(() => console.log('MongoDB connected'))
