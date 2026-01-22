@@ -6,7 +6,11 @@ import authRoutes from './routes/authRoutes.js';
 const PORT = process.env.PORT || 5000;
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  credentials: true
+}));
+
 app.use(express.json());
 
 // test root
@@ -15,7 +19,15 @@ app.get('/', (req, res) => {
 });
 
 // routes
-app.use('/api/products', productRoutes);
+app.get('/api/products', async (req, res) => {
+  try {
+    const products = await Product.find(); // misal pakai database
+    res.json(products);
+  } catch (err) {
+    console.error(err); // ini penting untuk debugging
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
 app.use('/api/auth', authRoutes);
 
 mongoose.connect('mongodb://127.0.0.1:27017/online-shop')
