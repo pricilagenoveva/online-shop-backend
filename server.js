@@ -4,6 +4,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import Product from './models/Product.js';
 // import authRoutes from './routes/authRoutes.js'; // route untuk register/login
+import authRoutes from './routes/authRoutes.js';
+import productRoutes from './routes/productRoutes.js';
 
 dotenv.config();
 
@@ -19,7 +21,6 @@ app.get('/', (req, res) => {
   res.send('Backend API is running');
 });
 
-import authRoutes from './routes/authRoutes.js';
 app.use('/api/auth', authRoutes);
 
 
@@ -34,6 +35,10 @@ app.get('/api/products', async (req, res) => {
     res.status(500).json({ message: "Internal Server Error", error: err.message });
   }
 });
+
+
+app.use('/api/products', productRoutes);
+
 
 app.put('/api/products/:id', async (req, res) => {
   try {

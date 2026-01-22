@@ -9,8 +9,17 @@ export const getProducts = async (req, res) => {
 
 // GET product by ID
 export const getProductById = async (req, res) => {
-  const product = await Product.findById(req.params.id);
-  res.json(product);
+  try {
+    const { id } = req.params;
+    const product = await Product.findById(id);
+
+    if (!product) return res.status(404).json({ message: 'Product not found' });
+
+    res.json(product);
+  } catch (err) {
+    console.error("Error di GET /api/products/:id:", err);
+    res.status(500).json({ message: "Internal Server Error", error: err.message });
+  }
 };
 
 // POST create product
