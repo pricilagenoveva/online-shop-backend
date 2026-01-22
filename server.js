@@ -1,26 +1,29 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import Product from './models/Product.js'; // import model
-// import routes lain jika ada
-// import productRoutes from './routes/productRoutes.js';
-// import authRoutes from './routes/authRoutes.js';
 import dotenv from 'dotenv';
+import Product from './models/Product.js';
+// import authRoutes from './routes/authRoutes.js'; // route untuk register/login
+
 dotenv.config();
 
-
-const PORT = process.env.PORT || 5000;
 const app = express();
+const PORT = process.env.PORT || 5000;
 
-app.use(cors({ origin: '*', credentials: true }));
+// Middleware
 app.use(express.json());
+app.use(cors({ origin: '*', credentials: true }));
 
-// test root
+// Test root
 app.get('/', (req, res) => {
   res.send('Backend API is running');
 });
 
-// GET all products
+import authRoutes from './routes/authRoutes.js';
+app.use('/api/auth', authRoutes);
+
+
+// Product routes
 app.get('/api/products', async (req, res) => {
   try {
     console.log("Request ke /api/products diterima");
@@ -32,7 +35,6 @@ app.get('/api/products', async (req, res) => {
   }
 });
 
-// PUT product by id
 app.put('/api/products/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -53,7 +55,6 @@ app.put('/api/products/:id', async (req, res) => {
   }
 });
 
-// DELETE product by id
 app.delete('/api/products/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -75,6 +76,7 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
   .catch(err => console.error("MongoDB connection error:", err));
 
+// Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
